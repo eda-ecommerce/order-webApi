@@ -1,14 +1,14 @@
 ﻿public class PaymentServiceTest
 {
-    private readonly PaymentService _sut; //system unit test
-    private readonly Mock<IPaymentRepository> _paymentRepoMock = new Mock<IPaymentRepository>();
-    private readonly ILogger<PaymentService> _logger;
+    private readonly OrderService _sut; //system unit test
+    private readonly Mock<IOrderRepository> _paymentRepoMock = new Mock<IOrderRepository>();
+    private readonly ILogger<OrderService> _logger;
     private readonly IConfiguration _configuration;
 
 
     public PaymentServiceTest()
     {
-        _sut = new PaymentService(_logger, _paymentRepoMock.Object, _configuration);
+        _sut = new OrderService(_logger, _paymentRepoMock.Object, _configuration);
     }
 
     [Fact]
@@ -20,7 +20,7 @@
         var payment1Firstname = "Hans";
         var payment1Lastname = "Dietmar";
         var payment1Username = "HansDietmar";
-        var payment1 = new Payment()
+        var payment1 = new Order()
         {
             UserId = payment1Id,
             Firstname = payment1Firstname,
@@ -33,7 +33,7 @@
         var payment2Firstname = "Dieter";
         var payment2Lastname = "Mücke";
         var payment2Username = "DieterMücke";
-        var payment2 = new Payment()
+        var payment2 = new Order()
         {
             UserId = payment2Id,
             Firstname = payment2Firstname,
@@ -41,7 +41,7 @@
             Username = payment2Username
         };
 
-        List<Payment> paymentsList = new List<Payment>() {};
+        List<Order> paymentsList = new List<Order>() {};
         paymentsList.Add(payment1);
         paymentsList.Add(payment2);
 
@@ -68,7 +68,7 @@
     public async Task GetPayments_ShouldReturnNothing_WhenNoPaymentsExists()
     {
         // Arrage
-        List<Payment> paymentsList = new List<Payment>() {};
+        List<Order> paymentsList = new List<Order>() {};
 
         _paymentRepoMock.Setup(x => x.GetAllPayments())
             .ReturnsAsync(() => null);

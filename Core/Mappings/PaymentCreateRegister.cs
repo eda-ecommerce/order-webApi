@@ -4,6 +4,6 @@
     {
         // usage:
         // var paymentDto = payment.Adapt<PaymentDto>();
-        config.NewConfig<Payment, PaymentDto>().PreserveReference(true);
+        config.NewConfig<Order, OrderDto>().PreserveReference(true);
     }
 }

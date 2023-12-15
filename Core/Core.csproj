@@ -28,4 +28,8 @@
 		<Using Include="Microsoft.Extensions.Configuration" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Models\DTOs\Payment\PaymentUpdateDto.cs" />
+	</ItemGroup>
+
 </Project>

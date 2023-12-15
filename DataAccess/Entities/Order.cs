@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 
-public class Payment
+public class Order
 {
     [Key]
     public Guid UserId { get; set; }
