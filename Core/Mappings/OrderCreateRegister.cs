@@ -1,9 +1,9 @@
-﻿public class PaymentToPaymentDtoRegister : IRegister
+﻿public class OrderToOrderDtoRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
         // usage:
-        // var paymentDto = payment.Adapt<PaymentDto>();
+        // var orderDto = order.Adapt<OrderDto>();
         config.NewConfig<Order, OrderDto>().PreserveReference(true);
     }
 }

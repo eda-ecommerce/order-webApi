@@ -6,7 +6,7 @@ using System.Net;
 public class OrderService : IOrderService
 {
     private readonly ILogger<OrderService> _logger;
-    private readonly IOrderRepository _OrderRepository;
+    private readonly IOrderRepository _orderRepository;
     private readonly IConfiguration _configuration;
 
     public OrderService(ILogger<OrderService> logger, IOrderRepository orderRepository, IConfiguration configuration)
