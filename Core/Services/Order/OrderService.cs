@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Net;
+using Core.Models.DTOs.Order;
 
 public class OrderService : IOrderService
 {
@@ -22,7 +23,7 @@ public class OrderService : IOrderService
     {
         var orders = await _orderRepository.GetAllOrders();
 
-        if (orders == null)
+        if (orders.Count == 0)
         {
             return null;
         }
@@ -47,41 +48,38 @@ public class OrderService : IOrderService
         return orderDto;
     }
 
-    public async Task UpdateOrder(OfferingDto offeringDto)
+    public async Task UpdateOrder(Guid OrderId, OrderUpdateDto orderUpdateDto)
     {
         // get topic from appsettings.json
         var kafka_topic = _configuration.GetSection("Kafka").GetSection("Topic1").Value;
         var kafka_broker = _configuration.GetSection("Kafka").GetSection("Broker").Value;
         _logger.LogInformation($" Topic: {kafka_topic}");
-
-        var order = await _orderRepository.GetOrder((Guid)offeringDto.UserId);
+    
+        var order = await _orderRepository.GetOrder(OrderId);
         
-
+    
         if (order == null)
         {
-            throw new Exception($"Order not found: {offeringDto.UserId}");
+            throw new Exception($"Order not found: {OrderId}");
         }
-
-        order.Firstname = offeringDto.Firstname;
-        order.Lastname = offeringDto.Lastname;
-        order.Username = offeringDto.Username;
-
-        await _orderRepository.UpdatOrder(order);
-
+        
+        order.OrderStatus = orderUpdateDto.OrderStatus;
+        order.TotalPrice = orderUpdateDto.TotalPrice;
+    
+        await _orderRepository.UpdateOrder(order);
+    
         // Produce messages
         ProducerConfig configProducer = new ProducerConfig
         {
             BootstrapServers = kafka_broker,
             ClientId = Dns.GetHostName()
         };
-
+    
         var demoOrder = new OrderDto
         {
-            Firstname = offeringDto.Firstname,
-            Lastname = offeringDto.Lastname,
-            Username = offeringDto.Username
+            OrderStatus = orderUpdateDto.OrderStatus,
         };
-
+    
         using var producer = new ProducerBuilder<Null, string>(configProducer).Build();
         
         var result = await producer.ProduceAsync(kafka_topic, new Message<Null, string>
@@ -89,7 +87,7 @@ public class OrderService : IOrderService
             Value = JsonSerializer.Serialize<OrderDto>(demoOrder)
         });
         Console.WriteLine(JsonSerializer.Serialize<OrderDto>(demoOrder));
-
+    
         
     }
 }

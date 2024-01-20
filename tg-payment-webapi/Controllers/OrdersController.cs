@@ -1,4 +1,6 @@
-﻿[Route("api/Orders")]
+﻿using Core.Models.DTOs.Order;
+
+[Route("api/Orders")]
 [ApiController]
 public class OrdersController : ControllerBase
 {
@@ -19,34 +21,52 @@ public class OrdersController : ControllerBase
 
         List<OrderDto> orders = null;
         orders = await _orderService.GetOrders();
+        
+        if (orders == null)
+        {
+            return NotFound($"Orders not found");
+        }
 
         return Ok(orders);
     }
-
-    [HttpPut("Update/{id}")]
-    public async Task<IActionResult> UpdateOrder(Guid id, [FromBody] OfferingDto offeringDto)
+    
+    [HttpGet("{id}/Order")]
+    public async Task<IActionResult> GetOrder(Guid id)
     {
-        offeringDto.OfferingId = id;
-
-        // Find order
-        var order = await _orderService.GetOrder(id);
-
+        _logger.LogInformation($"Get orders request");
+    
+        OrderDto order = null;
+        order = await _orderService.GetOrder(id);
+        
         if (order == null)
         {
             return NotFound($"Order not found: {id}");
         }
+    
+        return Ok(order);
+    }
 
-
+    [HttpPut("Update/{id}")]
+    public async Task<IActionResult> UpdateOrder(Guid id, [FromBody] OrderUpdateDto OrderUpdateDto)
+    {
+        // Find order
+        var order = await _orderService.GetOrder(id);
+    
+        if (order == null)
+        {
+            return NotFound($"Order not found: {id}");
+        }
+    
         try
         {
-            await _orderService.UpdateOrder(offeringDto);
+            await _orderService.UpdateOrder(id, OrderUpdateDto);
         }
         catch (Exception e)
         {
             return NotFound(e.Message);
         }
-
-        return Ok();
+    
+        return Ok($"Order Updated Successfully: {id}");
     }
 }
 

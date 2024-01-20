@@ -4,7 +4,7 @@
     {
     }
 
-    public DbSet<Order> Payments { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

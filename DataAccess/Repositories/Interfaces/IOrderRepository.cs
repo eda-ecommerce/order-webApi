@@ -1,7 +1,7 @@
 ﻿public interface IOrderRepository
 {
-    Task<List<Order>> GetAllPayments();
-    Task<Order> GetPayment(Guid paymentId);
-    Task UpdatPayment(Order order);
+    Task<List<Order>> GetAllOrders();
+    Task<Order> GetOrder(Guid paymentId);
+    Task UpdateOrder(Order order);
 }
 

@@ -1,25 +1,17 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using Core.Models.DTOs.Order;
 
 public class Order
 {
     [Key]
-    public Guid UserId { get; set; }
-
-    /// <summary>
-    /// Durch [JsonIgnore] würde der Value nicht an Kafka gesendet werden
-    /// </summary>
-    //[JsonIgnore]
-    public string Firstname { get; set; }
-
-    /// <summary>
-    /// Durch [JsonIgnore] würde der Value nicht an Kafka gesendet werden
-    /// </summary>
-    //[JsonIgnore]
-    public string Lastname { get; set; }
-
-    /// <summary>
-    /// Bsp: DieterMücke
-    /// </summary>
-    public string Username { get; set; }
+    public Guid OrderId { get; set; }
+    
+    public Guid CustomerId { get; set; }
+    
+    public DateOnly OrderDate { get; set; }
+    
+    public OrderStatus OrderStatus { get; set; }
+    
+    public float TotalPrice { get; set; }
 }
