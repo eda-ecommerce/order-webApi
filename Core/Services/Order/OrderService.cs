@@ -62,9 +62,16 @@ public class OrderService : IOrderService
         {
             throw new Exception($"Order not found: {OrderId}");
         }
+
+        if (orderUpdateDto.OrderStatus != OrderStatus.Cancelled &&
+            orderUpdateDto.OrderStatus != OrderStatus.Completed && 
+            orderUpdateDto.OrderStatus != OrderStatus.Paid &&
+            orderUpdateDto.OrderStatus != OrderStatus.InProgress)
+        {
+            throw new Exception($"This order status not available: {orderUpdateDto.OrderStatus}");
+        }
         
         order.OrderStatus = orderUpdateDto.OrderStatus;
-        order.TotalPrice = orderUpdateDto.TotalPrice;
     
         await _orderRepository.UpdateOrder(order);
     
@@ -74,6 +81,13 @@ public class OrderService : IOrderService
             BootstrapServers = kafka_broker,
             ClientId = Dns.GetHostName()
         };
+
+      
+        var orderHeader = new Headers();
+        orderHeader.Add("source", Encoding.UTF8.GetBytes("order"));
+        orderHeader.Add("timestamp", Encoding.UTF8.GetBytes(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString()));
+        orderHeader.Add("operation", Encoding.UTF8.GetBytes("updated"));
+        
     
         var demoOrder = new OrderDto
         {
@@ -84,11 +98,10 @@ public class OrderService : IOrderService
         
         var result = await producer.ProduceAsync(kafka_topic, new Message<Null, string>
         {
-            Value = JsonSerializer.Serialize<OrderDto>(demoOrder)
+            Value = JsonSerializer.Serialize<OrderDto>(demoOrder),
+            Headers = orderHeader
         });
-        Console.WriteLine(JsonSerializer.Serialize<OrderDto>(demoOrder));
-    
-        
+
     }
 }
 
