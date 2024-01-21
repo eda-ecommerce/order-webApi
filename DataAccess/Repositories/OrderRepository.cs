@@ -9,8 +9,8 @@
 
     public async Task<List<Order>> GetAllOrders()
     {
-        var orders = await _context.Orders       
-            .ToListAsync();
+        var orders = await _context.Orders.ToListAsync();
+        // var items = await _context.Orders.ToListAsync();
 
         return orders;
     }

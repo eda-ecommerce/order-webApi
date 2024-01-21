@@ -8,8 +8,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: OrderAllowSpecificOrigins,
         builder => {
             builder
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
         });
 });
 
@@ -27,6 +28,8 @@ typeAdapterConfig.Scan(Assembly.GetAssembly(typeof(OrderToOrderDtoRegister)));
 var mapperConfig = new Mapper(typeAdapterConfig);
 builder.Services.AddSingleton<IMapper>(mapperConfig);
 
+
+
 //DbContext
 builder.Services.AddDbContext<OrderDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
@@ -39,12 +42,15 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseCors("CorsPolicy");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 // Configure the HTTP request pipeline.
 app.UseCors(OrderAllowSpecificOrigins);

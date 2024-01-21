@@ -89,16 +89,21 @@ public class OrderService : IOrderService
         orderHeader.Add("operation", Encoding.UTF8.GetBytes("updated"));
         
     
-        var demoOrder = new OrderDto
+        var updatedOrder = new OrderDto
         {
+            OrderId = OrderId,
+            CustomerId = order.CustomerId,
+            OrderDate = order.OrderDate,
             OrderStatus = orderUpdateDto.OrderStatus,
+            TotalPrice = order.TotalPrice,
+            Items = order.Items
         };
     
         using var producer = new ProducerBuilder<Null, string>(configProducer).Build();
         
         var result = await producer.ProduceAsync(kafka_topic, new Message<Null, string>
         {
-            Value = JsonSerializer.Serialize<OrderDto>(demoOrder),
+            Value = JsonSerializer.Serialize<OrderDto>(updatedOrder),
             Headers = orderHeader
         });
 

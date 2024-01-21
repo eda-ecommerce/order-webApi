@@ -11,4 +11,6 @@ public class OrderDto
     public OrderStatus OrderStatus { get; set; }
     
     public float TotalPrice { get; set; }
+     
+    public ICollection<Item> Items { get; set; } = new List<Item>();
 }
