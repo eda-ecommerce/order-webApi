@@ -31,8 +31,15 @@ builder.Services.AddSingleton<IMapper>(mapperConfig);
 
 
 //DbContext
+var sqlstring = "";
+if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("DBSTRING"))) {
+    sqlstring = builder.Configuration.GetConnectionString("SqlServer");
+} else {
+    sqlstring = Environment.GetEnvironmentVariable("DBSTRING");
+};
 builder.Services.AddDbContext<OrderDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+    options.UseSqlServer(sqlstring)
+);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
