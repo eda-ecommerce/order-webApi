@@ -66,7 +66,7 @@ public class OrderService : IOrderService
         if (orderUpdateDto.OrderStatus != OrderStatus.Cancelled &&
             orderUpdateDto.OrderStatus != OrderStatus.Completed && 
             orderUpdateDto.OrderStatus != OrderStatus.Paid &&
-            orderUpdateDto.OrderStatus != OrderStatus.InProgress)
+            orderUpdateDto.OrderStatus != OrderStatus.InProcess)
         {
             throw new Exception($"This order status not available: {orderUpdateDto.OrderStatus}");
         }
