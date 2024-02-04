@@ -1,3 +1,5 @@
+using Microsoft.Data.SqlClient;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // CORS
@@ -31,8 +33,15 @@ builder.Services.AddSingleton<IMapper>(mapperConfig);
 
 
 //DbContext
+var sqlstring = "";
+if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("DBSTRING"))) {
+    sqlstring = builder.Configuration.GetConnectionString("SqlServer");
+} else {
+    sqlstring = Environment.GetEnvironmentVariable("DBSTRING");
+};
 builder.Services.AddDbContext<OrderDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+    options.UseSqlServer(sqlstring)
+);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -60,5 +69,31 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// check connection
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetService<OrderDbContext>();
+
+    SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder(sqlstring);
+    sqlConnectionStringBuilder.InitialCatalog = "master";
+
+    context.Database.SetConnectionString(sqlConnectionStringBuilder.ConnectionString);
+
+
+    Console.WriteLine("Waiting for DB connection...");
+
+    while (!context.Database.CanConnect())
+    {
+        int milliseconds = 2000;
+        Thread.Sleep(milliseconds);
+        // we need to wait, since we need to run migrations
+    }
+
+    Console.WriteLine("DB connected");
+
+    context.Database.SetConnectionString(sqlstring);
+}
+
 
 app.Run();
