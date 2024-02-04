@@ -1,9 +1,9 @@
 ﻿using Core.Models.DTOs.Order;
-using Core.Services.Order;
-using DataAccess.Entities;
+// using Core.Services.Order;
+// using DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Presentation.Controllers;
+// using Presentation.Controllers;
 using Xunit.Abstractions;
 
 public class OrderServiceTest
@@ -133,7 +133,7 @@ public class OrderServiceTest
 
         // Act
         var orders = await _sut.GetOrders();
-
+        Console.WriteLine(orders);
         // Assert
         orders.Should().BeNull();
     }
@@ -189,7 +189,7 @@ public class OrderServiceTest
                 It.Is<LogLevel>(logLevel => logLevel == LogLevel.Information),
                 It.Is<EventId>(eventId => eventId.Id == 0),
                 It.Is<It.IsAnyType>((@object, @type) =>
-                    @object.ToString() == $@"Order was updated ${order1.OrderId}"
+                    @object.ToString() == $"Order was updated ${order1.OrderId}"
                     && @type.Name == "FormattedLogValues"),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
@@ -251,7 +251,7 @@ public class OrderServiceTest
                 It.Is<LogLevel>(logLevel => logLevel == LogLevel.Information),
                 It.Is<EventId>(eventId => eventId.Id == 0),
                 It.Is<It.IsAnyType>((@object, @type) =>
-                    @object.ToString() == $@"Order was updated ${order1.OrderId}"
+                    @object.ToString() == $"Order not found"
                     && @type.Name == "FormattedLogValues"),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
