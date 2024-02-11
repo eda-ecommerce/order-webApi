@@ -23,7 +23,7 @@ public class OrderService : IOrderService
     {
         var orders = await _orderRepository.GetAllOrders();
 
-        if (orders.Count == 0)
+        if (orders == null)
         {
             return null;
         }
@@ -48,25 +48,20 @@ public class OrderService : IOrderService
         return orderDto;
     }
 
-    public async Task UpdateOrder(Guid OrderId, OrderUpdateDto orderUpdateDto)
+    public async Task<OrderDto?> UpdateOrder(Guid OrderId, OrderUpdateDto orderUpdateDto)
     {
-        // get topic from appsettings.json
-        var kafka_topic = _configuration.GetSection("Kafka").GetSection("Topic1").Value;
-        var kafka_broker = _configuration.GetSection("Kafka").GetSection("Broker").Value;
-        _logger.LogInformation($" Topic: {kafka_topic}");
-    
         var order = await _orderRepository.GetOrder(OrderId);
         
-    
         if (order == null)
         {
-            throw new Exception($"Order not found: {OrderId}");
+            _logger.LogInformation($"Order not found");
+            return null;
         }
 
         if (orderUpdateDto.OrderStatus != OrderStatus.Cancelled &&
             orderUpdateDto.OrderStatus != OrderStatus.Completed && 
             orderUpdateDto.OrderStatus != OrderStatus.Paid &&
-            orderUpdateDto.OrderStatus != OrderStatus.InProgress)
+            orderUpdateDto.OrderStatus != OrderStatus.InProcess)
         {
             throw new Exception($"This order status not available: {orderUpdateDto.OrderStatus}");
         }
@@ -74,20 +69,6 @@ public class OrderService : IOrderService
         order.OrderStatus = orderUpdateDto.OrderStatus;
     
         await _orderRepository.UpdateOrder(order);
-    
-        // Produce messages
-        ProducerConfig configProducer = new ProducerConfig
-        {
-            BootstrapServers = kafka_broker,
-            ClientId = Dns.GetHostName()
-        };
-
-      
-        var orderHeader = new Headers();
-        orderHeader.Add("source", Encoding.UTF8.GetBytes("order"));
-        orderHeader.Add("timestamp", Encoding.UTF8.GetBytes(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString()));
-        orderHeader.Add("operation", Encoding.UTF8.GetBytes("updated"));
-        
     
         var updatedOrder = new OrderDto
         {
@@ -98,15 +79,9 @@ public class OrderService : IOrderService
             TotalPrice = order.TotalPrice,
             Items = order.Items
         };
-    
-        using var producer = new ProducerBuilder<Null, string>(configProducer).Build();
         
-        var result = await producer.ProduceAsync(kafka_topic, new Message<Null, string>
-        {
-            Value = JsonSerializer.Serialize<OrderDto>(updatedOrder),
-            Headers = orderHeader
-        });
-
+        _logger.LogInformation($"Order was updated ${updatedOrder.OrderId}");
+        return updatedOrder;
     }
 }
 

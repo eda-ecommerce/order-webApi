@@ -1,4 +1,7 @@
-﻿using Core.Models.DTOs.Order;
+﻿using System.Net;
+using System.Text;
+using Confluent.Kafka;
+using Core.Models.DTOs.Order;
 
 [Route("api/Orders")]
 [ApiController]
@@ -7,6 +10,7 @@ public class OrdersController : ControllerBase
 
     private readonly ILogger<OrdersController> _logger;
     private readonly IOrderService _orderService;
+    private readonly IConfiguration _configuration;
 
     public OrdersController(ILogger<OrdersController> logger, IOrderService orderService)
     {
@@ -49,6 +53,11 @@ public class OrdersController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> UpdateOrder(Guid id, [FromBody] OrderUpdateDto OrderUpdateDto)
     {
+        // get topic from appsettings.json
+        var kafka_topic = _configuration.GetSection("Kafka").GetSection("Topic1").Value;
+        var kafka_broker = _configuration.GetSection("Kafka").GetSection("Broker").Value;
+        _logger.LogInformation($" Topic: {kafka_topic}");
+        
         // Find order
         var order = await _orderService.GetOrder(id);
     
@@ -59,7 +68,27 @@ public class OrdersController : ControllerBase
     
         try
         {
-            await _orderService.UpdateOrder(id, OrderUpdateDto);
+            // Produce messages
+            ProducerConfig configProducer = new ProducerConfig
+            {
+                BootstrapServers = kafka_broker,
+                ClientId = Dns.GetHostName()
+            };
+            
+            var orderHeader = new Headers();
+            orderHeader.Add("source", Encoding.UTF8.GetBytes("order"));
+            orderHeader.Add("timestamp", Encoding.UTF8.GetBytes(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString()));
+            orderHeader.Add("operation", Encoding.UTF8.GetBytes("updated"));
+
+            var updatedOrder = await _orderService.UpdateOrder(id, OrderUpdateDto);
+            
+            using var producer = new ProducerBuilder<Null, string>(configProducer).Build();
+        
+            var result = await producer.ProduceAsync(kafka_topic, new Message<Null, string>
+            {
+                Value = JsonSerializer.Serialize<OrderDto>(updatedOrder),
+                Headers = orderHeader
+            });
         }
         catch (Exception e)
         {

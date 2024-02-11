@@ -1,14 +1,15 @@
-namespace Core.Models.DTOs.Order;
+using System.ComponentModel.DataAnnotations;
 
-public class Item
+public class ItemDto
 {
+    [Key]
     public Guid ItemId { get; set; }
     
     public int Quantity { get; set; }
     
     public Guid OrderId { get; set; }
 
-    public global::Order Order { get; set; }
+    public Order Order { get; set; }
 
     public Guid OfferingId { get; set; }
     

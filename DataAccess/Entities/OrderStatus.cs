@@ -2,7 +2,7 @@ namespace Core.Models.DTOs.Order;
 
 public enum OrderStatus
 {
-    InProgress,
+    InProcess,
     Completed,
     Cancelled,
     Paid

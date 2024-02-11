@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.69" />
@@ -24,10 +25,6 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<Using Include="Xunit" />
 		<Using Include="FluentAssertions" />
@@ -36,6 +33,11 @@
 		<Using Include="System.Threading.Tasks" />
 		<Using Include="Microsoft.Extensions.Logging" />
 		<Using Include="Microsoft.Extensions.Configuration;"/>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Core\Core.csproj" />
+	  <ProjectReference Include="..\tg-payment-webapi\Presentation.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -5,6 +5,6 @@ public  interface IOrderService
     Task<List<OrderDto>?> GetOrders();
     Task<OrderDto?> GetOrder(Guid orderID);
 
-    Task UpdateOrder(Guid orderId, OrderUpdateDto orderUpdateDto);
+    Task<OrderDto?> UpdateOrder(Guid orderId, OrderUpdateDto orderUpdateDto);
 }
 
