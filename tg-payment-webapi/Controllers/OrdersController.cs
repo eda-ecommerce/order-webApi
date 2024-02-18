@@ -102,7 +102,7 @@ public class OrdersController : ControllerBase
                 CustomerId = order.CustomerId,
                 OrderDate = order.OrderDate,
                 TotalPrice = order.TotalPrice,
-                OrderStatus = order.OrderStatus,
+                OrderStatus = order.OrderStatus.ToString(),
                 Items = itemDtos
             };
             
