@@ -54,11 +54,8 @@ var app = builder.Build();
 app.UseCors("CorsPolicy");
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 
 // Configure the HTTP request pipeline.
@@ -71,29 +68,29 @@ app.UseAuthorization();
 app.MapControllers();
 
 // check connection
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetService<OrderDbContext>();
+// using (var scope = app.Services.CreateScope())
+// {
+//     var context = scope.ServiceProvider.GetService<OrderDbContext>();
 
-    SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder(sqlstring);
-    sqlConnectionStringBuilder.InitialCatalog = "master";
+//     SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder(sqlstring);
+//     sqlConnectionStringBuilder.InitialCatalog = "master";
 
-    context.Database.SetConnectionString(sqlConnectionStringBuilder.ConnectionString);
+//     context.Database.SetConnectionString(sqlConnectionStringBuilder.ConnectionString);
 
 
-    Console.WriteLine("Waiting for DB connection...");
+//     Console.WriteLine("Waiting for DB connection...");
 
-    while (!context.Database.CanConnect())
-    {
-        int milliseconds = 2000;
-        Thread.Sleep(milliseconds);
-        // we need to wait, since we need to run migrations
-    }
+//     while (!context.Database.CanConnect())
+//     {
+//         int milliseconds = 2000;
+//         Thread.Sleep(milliseconds);
+//         // we need to wait, since we need to run migrations
+//     }
 
-    Console.WriteLine("DB connected");
+//     Console.WriteLine("DB connected");
 
-    context.Database.SetConnectionString(sqlstring);
-}
+//     context.Database.SetConnectionString(sqlstring);
+// }
 
 
 app.Run();
