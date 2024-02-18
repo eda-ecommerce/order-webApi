@@ -51,7 +51,7 @@ public class OrderService : IOrderService
     public async Task<OrderDto?> UpdateOrder(Guid OrderId, OrderUpdateDto orderUpdateDto)
     {
         var order = await _orderRepository.GetOrder(OrderId);
-        
+      
         if (order == null)
         {
             _logger.LogInformation($"Order not found");
@@ -69,7 +69,7 @@ public class OrderService : IOrderService
         order.OrderStatus = orderUpdateDto.OrderStatus;
     
         await _orderRepository.UpdateOrder(order);
-    
+        
         var updatedOrder = new OrderDto
         {
             OrderId = OrderId,
@@ -84,4 +84,3 @@ public class OrderService : IOrderService
         return updatedOrder;
     }
 }
-

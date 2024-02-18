@@ -9,13 +9,13 @@
 
     public async Task<List<Order>> GetAllOrders()
     {
-        var orders = await _context.Orders.ToListAsync();
+        var orders = await _context.Orders.Include("Items").ToListAsync();
 
         return orders;
     }
     public async Task<Order> GetOrder(Guid orderId)
     {
-        var order = await _context.Orders
+        var order = await _context.Orders.Include("Items")
             .Where(p => p.OrderId == orderId)
             .FirstOrDefaultAsync();
         return order;
@@ -34,4 +34,3 @@
     }
 
 }
-

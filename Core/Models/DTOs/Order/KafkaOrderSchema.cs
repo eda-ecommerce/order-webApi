@@ -1,6 +1,6 @@
-﻿using Core.Models.DTOs.Order;
+namespace Core.Models.DTOs.Order;
 
-public class OrderDto
+public class KafkaOrderSchema
 {
     public Guid OrderId { get; set; }
     
@@ -12,5 +12,5 @@ public class OrderDto
     
     public float TotalPrice { get; set; }
      
-    public ICollection<Item>? Items { get; set; } = new List<Item>();
+    public ICollection<ItemDto>? Items { get; set; } = new List<ItemDto>();
 }

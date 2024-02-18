@@ -1,17 +1,14 @@
-using System.ComponentModel.DataAnnotations;
+namespace Core.Models.DTOs.Order;
 
 public class ItemDto
 {
-    [Key]
-    public Guid ItemId { get; set; }
+    public Guid shoppingBasketId { get; set; }
     
-    public int Quantity { get; set; }
-    
-    public Guid OrderId { get; set; }
+    public int quantity { get; set; }
 
-    public Order Order { get; set; }
-
-    public Guid OfferingId { get; set; }
+    public Guid offeringId { get; set; }
     
-    public float TotalPrice { get; set; }
+    public float totalPrice { get; set; }
+
+    public string itemState { get; set; }
 }

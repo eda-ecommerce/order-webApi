@@ -13,7 +13,7 @@ public class OrderDbContext : DbContext
     {
         modelBuilder.Entity<Order>()
             .HasMany(p => p.Items)
-            .WithOne(c => c.Order)
-            .HasForeignKey(c => c.OrderId);
+            .WithOne();
+        // .HasForeignKey(c => c.OrderId);
     }
 }

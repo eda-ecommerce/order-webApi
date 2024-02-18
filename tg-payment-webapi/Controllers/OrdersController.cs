@@ -12,10 +12,11 @@ public class OrdersController : ControllerBase
     private readonly IOrderService _orderService;
     private readonly IConfiguration _configuration;
 
-    public OrdersController(ILogger<OrdersController> logger, IOrderService orderService)
+    public OrdersController(ILogger<OrdersController> logger, IOrderService orderService, IConfiguration configuration)
     {
         _logger = logger;
         _orderService = orderService;
+        _configuration = configuration;
     }
     
     [HttpGet]
@@ -39,7 +40,7 @@ public class OrdersController : ControllerBase
     {
         _logger.LogInformation($"Get orders request");
     
-        OrderDto order = null;
+        OrderDto? order = null;
         order = await _orderService.GetOrder(id);
         
         if (order == null)
@@ -60,7 +61,7 @@ public class OrdersController : ControllerBase
         
         // Find order
         var order = await _orderService.GetOrder(id);
-    
+        
         if (order == null)
         {
             return NotFound($"Order not found: {id}");
@@ -81,12 +82,35 @@ public class OrdersController : ControllerBase
             orderHeader.Add("operation", Encoding.UTF8.GetBytes("updated"));
 
             var updatedOrder = await _orderService.UpdateOrder(id, OrderUpdateDto);
+
+            List<ItemDto> itemDtos = new List<ItemDto>();
+            order.Items.ToList().ForEach(i =>
+            {
+             itemDtos.Add(new ItemDto()
+             {
+                 shoppingBasketId = i.shoppingBasketId,
+                 itemState = i.itemState,
+                 offeringId = i.offeringId,
+                 quantity = i.quantity,
+                 totalPrice = i.totalPrice
+             });   
+            });
+
+            var KafkaOrder = new KafkaOrderSchema()
+            {
+                OrderId = order.OrderId,
+                CustomerId = order.CustomerId,
+                OrderDate = order.OrderDate,
+                TotalPrice = order.TotalPrice,
+                OrderStatus = order.OrderStatus,
+                Items = itemDtos
+            };
             
             using var producer = new ProducerBuilder<Null, string>(configProducer).Build();
         
             var result = await producer.ProduceAsync(kafka_topic, new Message<Null, string>
             {
-                Value = JsonSerializer.Serialize<OrderDto>(updatedOrder),
+                Value = JsonSerializer.Serialize<KafkaOrderSchema>(KafkaOrder),
                 Headers = orderHeader
             });
         }
@@ -98,4 +122,3 @@ public class OrdersController : ControllerBase
         return Ok($"Order Updated Successfully: {id}");
     }
 }
-

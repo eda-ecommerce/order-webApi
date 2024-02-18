@@ -42,11 +42,11 @@ public class OrderServiceTest
         {
             new Item()
             {
-                ItemId = Guid.NewGuid(),
-                OfferingId = Guid.NewGuid(),
-                OrderId = order1Id,
-                Quantity = 5,
-                TotalPrice = 500
+                itemId = Guid.NewGuid(),
+                offeringId = Guid.NewGuid(),
+                orderId = order1Id,
+                quantity = 5,
+                totalPrice = 500
             }
         };
         
@@ -72,11 +72,11 @@ public class OrderServiceTest
         {
             new Item()
             {
-                ItemId = Guid.NewGuid(),
-                OfferingId = Guid.NewGuid(),
-                OrderId = order2Id,
-                Quantity = 5,
-                TotalPrice = 500
+                itemId = Guid.NewGuid(),
+                offeringId = Guid.NewGuid(),
+                orderId = order2Id,
+                quantity = 5,
+                totalPrice = 500
             }
         };
         
@@ -148,11 +148,11 @@ public class OrderServiceTest
         {
             new Item()
             {
-                ItemId = Guid.NewGuid(),
-                OfferingId = Guid.NewGuid(),
-                OrderId = order1Id,
-                Quantity = 5,
-                TotalPrice = 500
+                itemId = Guid.NewGuid(),
+                offeringId = Guid.NewGuid(),
+                orderId = order1Id,
+                quantity = 5,
+                totalPrice = 500
             }
         };
         
@@ -210,11 +210,13 @@ public class OrderServiceTest
         {
             new Item()
             {
-                ItemId = Guid.NewGuid(),
-                OfferingId = Guid.NewGuid(),
-                OrderId = order1Id,
-                Quantity = 5,
-                TotalPrice = 500
+                itemId = Guid.NewGuid(),
+                offeringId = Guid.NewGuid(),
+                orderId = order1Id,
+                quantity = 5,
+                totalPrice = 500,
+                itemState = "active",
+                shoppingBasketId = Guid.NewGuid()
             }
         };
         
@@ -232,7 +234,7 @@ public class OrderServiceTest
             OrderDate = order1OrderDate,
             OrderStatus = order1Status,
             TotalPrice = order1TotalPrice,
-            Items = order1Items
+            Items = order1Items,
         };
         
         var orderUpdateDto = new OrderUpdateDto()
@@ -268,11 +270,11 @@ public class OrderServiceTest
         {
             new Item()
             {
-                ItemId = Guid.NewGuid(),
-                OfferingId = Guid.NewGuid(),
-                OrderId = order1Id,
-                Quantity = 5,
-                TotalPrice = 500
+                itemId = Guid.NewGuid(),
+                offeringId = Guid.NewGuid(),
+                orderId = order1Id,
+                quantity = 5,
+                totalPrice = 500
             }
         };
         
