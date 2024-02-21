@@ -88,6 +88,7 @@ public class OrdersController : ControllerBase
             {
              itemDtos.Add(new ItemDto()
              {
+                 shoppingBasketItemId = i.shoppingBasketItemId,
                  shoppingBasketId = i.shoppingBasketId,
                  itemState = i.itemState,
                  offeringId = i.offeringId,

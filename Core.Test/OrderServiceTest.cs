@@ -42,7 +42,7 @@ public class OrderServiceTest
         {
             new Item()
             {
-                itemId = Guid.NewGuid(),
+                shoppingBasketItemId = Guid.NewGuid(),
                 offeringId = Guid.NewGuid(),
                 orderId = order1Id,
                 quantity = 5,
@@ -72,7 +72,7 @@ public class OrderServiceTest
         {
             new Item()
             {
-                itemId = Guid.NewGuid(),
+                shoppingBasketItemId = Guid.NewGuid(),
                 offeringId = Guid.NewGuid(),
                 orderId = order2Id,
                 quantity = 5,
@@ -148,7 +148,7 @@ public class OrderServiceTest
         {
             new Item()
             {
-                itemId = Guid.NewGuid(),
+                shoppingBasketItemId = Guid.NewGuid(),
                 offeringId = Guid.NewGuid(),
                 orderId = order1Id,
                 quantity = 5,
@@ -210,7 +210,7 @@ public class OrderServiceTest
         {
             new Item()
             {
-                itemId = Guid.NewGuid(),
+                shoppingBasketItemId = Guid.NewGuid(),
                 offeringId = Guid.NewGuid(),
                 orderId = order1Id,
                 quantity = 5,
@@ -270,7 +270,7 @@ public class OrderServiceTest
         {
             new Item()
             {
-                itemId = Guid.NewGuid(),
+                shoppingBasketItemId = Guid.NewGuid(),
                 offeringId = Guid.NewGuid(),
                 orderId = order1Id,
                 quantity = 5,
